@@ -1,0 +1,27 @@
+\documentclass[a4paper,11pt]{ctexart}
+
+\usepackage{japanese-notes}
+
+\title{日本語ノート}
+\author{鼠鼠}
+\date{}
+
+\begin{document}
+
+\hypersetup{pageanchor=false}
+\makejptitle
+\hypersetup{pageanchor=true}
+
+\pagenumbering{gobble}
+\tableofcontents
+\clearpage
+\pagenumbering{arabic}
+
+% 每个日期文件负责一篇笔记；按希望的显示顺序排列即可。
+\input{sections/2026.6.22.tex}
+% \input{sections/2026.6.23.tex}
+
+\input{sections/example.tex}
+\input{sections/command.tex}
+
+\end{document}

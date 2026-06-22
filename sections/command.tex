@@ -1,0 +1,34 @@
+\clearpage
+\section{模板命令速查}
+
+以下内容是模板的最小使用示例，可以保留作备忘，也可以在正式笔记中删除。
+
+\begin{lstlisting}
+% 日文字体与假名标注
+\jp{日本語}
+\furigana{勉強}{べんきょう}
+
+% 词汇框
+\begin{vocab}{主题}
+  \vocabentry{単語}{たんご}{名词}{单词}
+\end{vocab}
+
+% 语法框
+\begin{grammar}{句型名称 \level{N5}}
+  语法说明。
+\end{grammar}
+
+% 三行例句：原句、读音、译文
+\begin{example}
+  \sentence{日本語を勉強します。}
+    {にほんご を べんきょう します。}
+    {学习日语。}
+\end{example}
+
+% 练习答题线
+\begin{practice}
+  题目内容。
+  \answerline[3]
+\end{practice}
+\end{lstlisting}
+

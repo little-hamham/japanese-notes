@@ -1,0 +1,339 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{japanese-notes}[2026/06/21 v1.0 Japanese study notes]
+
+\RequirePackage{fontspec}
+\RequirePackage{xeCJK}
+\RequirePackage[table]{xcolor}
+\RequirePackage{geometry}
+\RequirePackage{fancyhdr}
+\RequirePackage{hyperref}
+\RequirePackage{bookmark}
+\RequirePackage{tcolorbox}
+\RequirePackage{xparse}
+\RequirePackage{stackengine}
+\RequirePackage{array}
+\RequirePackage{booktabs}
+\RequirePackage{longtable}
+\RequirePackage{tabularx}
+\RequirePackage{enumitem}
+\RequirePackage{tikz}
+\RequirePackage{setspace}
+\RequirePackage{listings}
+
+\tcbuselibrary{skins,breakable,theorems}
+\usetikzlibrary{calc}
+
+% ---------- Palette ----------
+\definecolor{JPInk}{HTML}{24313D}
+\definecolor{JPIndigo}{HTML}{3D5278}
+\definecolor{JPRed}{HTML}{B34B43}
+\definecolor{JPGold}{HTML}{B58A3C}
+\definecolor{JPGreen}{HTML}{4E7663}
+\definecolor{JPPaper}{HTML}{FAF8F3}
+\definecolor{JPRose}{HTML}{F7ECE9}
+\definecolor{JPBlue}{HTML}{EDF1F7}
+\definecolor{JPMint}{HTML}{EDF4EF}
+\definecolor{JPSand}{HTML}{F6F0E4}
+\definecolor{JPGray}{HTML}{6F767D}
+\definecolor{JPLightGray}{HTML}{F1F2F2}
+
+% ---------- Page and fonts ----------
+\geometry{
+  a4paper,
+  left=2.05cm,
+  right=2.05cm,
+  top=2.35cm,
+  bottom=2.05cm,
+  headheight=23pt
+}
+
+\setmainfont{TeX Gyre Pagella}
+\setsansfont{TeX Gyre Heros}
+\setmonofont{TeX Gyre Cursor}
+
+% IPAex ships with TeX Live and embeds portably in the generated PDF.
+\newCJKfontfamily\jpmincho{ipaexm.ttf}[AutoFakeBold=2]
+\newCJKfontfamily\jpgothic{ipaexg.ttf}[AutoFakeBold=2]
+
+\newcommand{\jp}[1]{{\jpmincho #1}}
+\newcommand{\jpsans}[1]{{\jpgothic #1}}
+\newcommand{\term}[1]{\textcolor{JPRed}{\bfseries #1}}
+\newcommand{\silenticon}[2][1.45em]{%
+  \raisebox{-0.36em}{\includegraphics[height=#1]{assets/silent/#2.png}}%
+}
+\newcommand{\level}[1]{%
+  \tikz[baseline=(n.base)]\node[
+    fill=JPIndigo,
+    text=white,
+    rounded corners=2pt,
+    inner xsep=5pt,
+    inner ysep=1.5pt,
+    font=\sffamily\scriptsize\bfseries
+  ] (n) {#1};%
+}
+
+% Usage: \furigana{漢字}{かんじ}
+\newcommand{\furigana}[2]{%
+  \leavevmode
+  \begingroup
+    \renewcommand{\stackalignment}{c}%
+    \stackon[2pt]
+      {\jp{#1}}
+      {\jpsans{\fontsize{6}{7}\selectfont #2}}%
+  \endgroup
+}
+
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.25em}
+\linespread{1.12}
+\setlist[itemize]{leftmargin=2em,itemsep=0.25em,topsep=0.35em}
+\setlist[enumerate]{leftmargin=2.2em,itemsep=0.35em,topsep=0.35em}
+
+% ---------- Headings ----------
+\ctexset{
+  contentsname={目录},
+  section={
+    format=\Large\bfseries\centering\color{JPIndigo},
+    beforeskip=1.4ex plus .2ex,
+    afterskip=1.1ex
+  }
+}
+\setcounter{secnumdepth}{0}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\sffamily\color{JPGray}\leftmark}
+\fancyhead[R]{\small\jpsans{日本語ノート}}
+\fancyfoot[C]{\small\sffamily\color{black}\thepage}
+\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\headrule}{%
+  \vskip-7pt
+  \hbox to\headwidth{\color{JPRed}\leaders\hrule height \headrulewidth\hfill}%
+  \vskip7pt
+}
+\renewcommand{\sectionmark}[1]{\markboth{#1}{}}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=JPIndigo,
+  urlcolor=JPRed,
+  citecolor=JPGreen,
+  pdfcreator={XeLaTeX with japanese-notes.sty}
+}
+
+% ---------- Cover ----------
+\makeatletter
+\newcommand{\makejptitle}{%
+  \begin{titlepage}
+    \thispagestyle{empty}
+    \begin{tikzpicture}[remember picture,overlay]
+      \fill[JPRed]
+        (current page.north west)
+        rectangle ([xshift=11mm]current page.south west);
+      \fill[JPIndigo]
+        ([xshift=11mm]current page.north west)
+        rectangle ([xshift=14mm]current page.south west);
+    \end{tikzpicture}
+
+    \vspace*{4.5cm}
+    \hspace*{1.6cm}
+    \begin{minipage}{0.78\textwidth}
+      \centering
+      {\jpmincho\fontsize{46}{56}\selectfont\color{JPInk}\@title\par}
+      \vspace{1.4cm}
+      {\large\color{JPInk}\@author\par}
+    \end{minipage}
+    \vfill
+  \end{titlepage}
+}
+\makeatother
+
+% ---------- Reusable note boxes ----------
+\tcbset{
+  jpbox/.style={
+    enhanced,
+    breakable,
+    boxrule=0.65pt,
+    arc=2pt,
+    outer arc=2pt,
+    left=9pt,
+    right=9pt,
+    top=8pt,
+    bottom=8pt,
+    before skip=9pt,
+    after skip=9pt,
+    fonttitle=\heiti,
+    attach boxed title to top left={xshift=9pt,yshift*=-\tcboxedtitleheight/2},
+    boxed title style={arc=2pt,outer arc=2pt,left=6pt,right=6pt}
+  }
+}
+
+\newtcolorbox{studygoal}[1][本课目标]{
+  jpbox,
+  title={\silenticon{milk}\quad #1},
+  colback=JPSand,
+  colframe=JPGold,
+  colbacktitle=JPGold,
+  coltitle=white
+}
+
+\NewDocumentEnvironment{vocab}{O{} m +b}{%
+  \begin{tcolorbox}[
+    jpbox,
+    title={\silenticon{shy}\quad 词汇\quad \jp{#2}},
+    colback=JPRose,
+    colframe=JPRed,
+    colbacktitle=JPRed,
+    coltitle=white,
+    #1
+  ]
+  \renewcommand{\arraystretch}{1.45}%
+  \setlength{\tabcolsep}{5pt}%
+  \arrayrulecolor{JPRed!25}%
+  \begin{tabularx}{\linewidth}{@{}
+    >{\jpmincho\bfseries\arraybackslash}m{0.18\linewidth}
+    >{\jpmincho\arraybackslash}m{0.20\linewidth}
+    >{\centering\arraybackslash\small\color{JPRed}}m{0.12\linewidth}
+    >{\arraybackslash}X@{}}
+    \rowcolor{JPRed!10}
+    {\mdseries\heiti 单词} & {\mdseries\heiti 读音} &
+    {\mdseries\heiti 词性} & {\mdseries\heiti 释义}\\
+    \hline
+    #3
+  \end{tabularx}
+  \end{tcolorbox}
+}{}
+
+\newtcolorbox{grammar}[2][]{
+  jpbox,
+  title={\silenticon{cool}\quad 语法\quad #2},
+  colback=JPBlue,
+  colframe=JPIndigo,
+  colbacktitle=JPIndigo,
+  coltitle=white,
+  #1
+}
+
+\newtcolorbox{example}[1][]{
+  jpbox,
+  title={例句},
+  colback=white,
+  colframe=JPGreen,
+  colbacktitle=JPGreen,
+  coltitle=white,
+  #1
+}
+
+\newtcolorbox{dialogue}[1][会话练习]{
+  jpbox,
+  title={\silenticon{wink}\quad #1},
+  colback=JPMint,
+  colframe=JPGreen,
+  colbacktitle=JPGreen,
+  coltitle=white
+}
+
+\newtcolorbox{pitfall}[1][易错点]{
+  jpbox,
+  title={\silenticon{anger}\quad #1},
+  colback=JPRose,
+  colframe=JPRed,
+  colbacktitle=white,
+  coltitle=JPRed
+}
+
+\newtcolorbox{culture}[1][文化补充]{
+  jpbox,
+  title={#1},
+  colback=JPSand,
+  colframe=JPGold,
+  colbacktitle=white,
+  coltitle=JPGold
+}
+
+\newtcolorbox{practice}[1][]{
+  jpbox,
+  title={\silenticon{wipe}\quad 练习},
+  colback=JPLightGray,
+  colframe=JPGray,
+  colbacktitle=JPGray,
+  coltitle=white,
+  #1
+}
+
+% ---------- Learning-note commands ----------
+\newcommand{\vocabentry}[4]{%
+  #1 & #2 & #3 & #4\\
+  \hline
+}
+
+\newcommand{\sentence}[3]{%
+  \noindent{\jpmincho\large #1}\par
+  \vspace{1pt}
+  {\jpmincho\small\color{JPGray}#2}\par
+  \vspace{2pt}
+  {\color{JPInk}#3}\par
+}
+
+\newcommand{\dialogueline}[3]{%
+  \noindent
+  \makebox[2.2em][l]{\sffamily\bfseries\color{JPGreen}#1}
+  {\jpmincho #2}\par
+  \hspace*{2.2em}{\small\color{JPGray}#3}\par
+  \vspace{0.35em}
+}
+
+\newcommand{\answerline}[1][1]{%
+  \par\noindent
+  \foreach \n in {1,...,#1}{%
+    \rule{\linewidth}{0.35pt}\par\vspace{1.45em}%
+  }%
+}
+
+\newenvironment{vocabtable}{%
+  \renewcommand{\arraystretch}{1.35}
+  \setlength{\tabcolsep}{4pt}
+  \rowcolors{2}{JPLightGray}{white}
+  \begin{longtable}{@{}
+    >{\jpmincho\bfseries}p{0.18\textwidth}
+    >{\jpmincho}p{0.17\textwidth}
+    >{\centering\arraybackslash\sffamily\small}p{0.10\textwidth}
+    p{0.19\textwidth}
+    >{\jpmincho}p{0.24\textwidth}
+  @{}}
+  \rowcolor{JPIndigo!16}
+  {\mdseries\heiti 单词} & {\mdseries\heiti 读音} &
+  {\mdseries\heiti 词性} & {\mdseries\heiti 释义} &
+  {\mdseries\heiti 搭配 / 例句}\\
+  \endfirsthead
+  \rowcolor{JPIndigo!16}
+  {\mdseries\heiti 单词} & {\mdseries\heiti 读音} &
+  {\mdseries\heiti 词性} & {\mdseries\heiti 释义} &
+  {\mdseries\heiti 搭配 / 例句}\\
+  \endhead
+}{%
+  \end{longtable}
+}
+
+\lstdefinelanguage{JapaneseNotes}{
+  language=[LaTeX]TeX,
+  morekeywords={
+    furigana,jp,jpsans,term,level,silenticon,vocabentry,sentence,dialogueline,
+    answerline,makejptitle
+  }
+}
+
+\lstset{
+  language=JapaneseNotes,
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{JPIndigo}\bfseries,
+  commentstyle=\color{JPGreen},
+  stringstyle=\color{JPRed},
+  backgroundcolor=\color{JPLightGray},
+  frame=single,
+  rulecolor=\color{JPGray!50},
+  framesep=6pt,
+  breaklines=true,
+  columns=fullflexible,
+  showstringspaces=false
+}
