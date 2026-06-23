@@ -8,9 +8,19 @@
 \jp{日本語}
 \furigana{勉強}{べんきょう}
 
-% 词汇框
+% 词汇框：完整写法
 \begin{vocab}{主题}
   \vocabentry{単語}{たんご}{名词}{单词}
+\end{vocab}
+
+% 标题可省略；词条只写“词语＋释义”也可以
+\begin{vocab}
+  \vocabentry{ガクチカ}{学生时代投入精力最多的事情}
+\end{vocab}
+
+% 三项写法：词语、读音、释义
+\begin{vocab}{缩略语}
+  \vocabentry{ガクチカ}{がくちか}{学生时代投入精力最多的事情}
 \end{vocab}
 
 % 语法框
@@ -30,5 +40,23 @@
   题目内容。
   \answerline[3]
 \end{practice}
+\end{lstlisting}
+
+\subsection*{引用与超链接}
+在这里为了保存用我会把学习过程中用到的资料都罗列一下\cite{徐卫日语语法教程}。
+点击文中的引用编号会跳转到文末参考文献，参考文献后的引用页码可以跳回正文。
+项目文件可在
+\href{https://github.com/little-hamham/japanese-notes}{GitHub 仓库}
+查看，也可以直接显示网址：\url{https://github.com/little-hamham/japanese-notes}。
+
+\begin{lstlisting}
+% 引用 references.bib 中的文献
+\cite{徐卫日语语法教程}
+
+% 带说明文字的超链接
+\href{https://example.com}{链接文字}
+
+% 直接显示网址
+\url{https://example.com}
 \end{lstlisting}
 

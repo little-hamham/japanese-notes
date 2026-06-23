@@ -8,6 +8,12 @@
 \RequirePackage{fancyhdr}
 \RequirePackage{hyperref}
 \RequirePackage{bookmark}
+\RequirePackage[
+  backend=biber,
+  style=numeric,
+  sorting=none,
+  sortcites=true
+]{biblatex}
 \RequirePackage{tcolorbox}
 \RequirePackage{xparse}
 \RequirePackage{stackengine}
@@ -116,9 +122,15 @@
 \hypersetup{
   colorlinks=true,
   linkcolor=JPIndigo,
-  urlcolor=JPRed,
+  urlcolor=JPIndigo,
   citecolor=JPGreen,
   pdfcreator={XeLaTeX with japanese-notes.sty}
+}
+\urlstyle{same}
+
+\DefineBibliographyStrings{english}{
+  bibliography={参考文献},
+  references={参考文献}
 }
 
 % ---------- Cover ----------
@@ -177,10 +189,10 @@
   coltitle=white
 }
 
-\NewDocumentEnvironment{vocab}{O{} m +b}{%
+\NewDocumentEnvironment{vocab}{O{} g +b}{%
   \begin{tcolorbox}[
     jpbox,
-    title={\silenticon{shy}\quad 词汇\quad \jp{#2}},
+    title={\silenticon{shy}\quad 词汇\IfValueT{#2}{\quad \jp{#2}}},
     colback=JPRose,
     colframe=JPRed,
     colbacktitle=JPRed,
@@ -195,10 +207,6 @@
     >{\jpmincho\arraybackslash}m{0.20\linewidth}
     >{\centering\arraybackslash\small\color{JPRed}}m{0.12\linewidth}
     >{\arraybackslash}X@{}}
-    \rowcolor{JPRed!10}
-    {\mdseries\heiti 单词} & {\mdseries\heiti 读音} &
-    {\mdseries\heiti 词性} & {\mdseries\heiti 释义}\\
-    \hline
     #3
   \end{tabularx}
   \end{tcolorbox}
@@ -262,8 +270,19 @@
 }
 
 % ---------- Learning-note commands ----------
-\newcommand{\vocabentry}[4]{%
-  #1 & #2 & #3 & #4\\
+% Two arguments: word, meaning.
+% Three arguments: word, reading, meaning.
+% Four arguments: word, reading, part of speech, meaning.
+\NewDocumentCommand{\vocabentry}{m m g g}{%
+  \IfNoValueTF{#3}{%
+    #1 & \multicolumn{3}{>{\raggedright\arraybackslash}p{0.75\linewidth}@{}}{#2}\\
+  }{%
+    \IfNoValueTF{#4}{%
+      #1 & #2 & \multicolumn{2}{>{\raggedright\arraybackslash}p{0.55\linewidth}@{}}{#3}\\
+    }{%
+      #1 & #2 & #3 & #4\\
+    }%
+  }%
   \hline
 }
 
