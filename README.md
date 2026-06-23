@@ -8,7 +8,8 @@
 ## 文件
 
 - `main.tex`：文档骨架和日期文件的 `\input` 清单。
-- `sections/`：按日期存放笔记正文，例如 `2026.6.22.tex`。
+- `sections/`：按日期存放笔记正文，例如 `2026.6.23.tex`。
+- `references.bib`：保存书籍、文章和网页等参考文献信息。
 - `japanese-notes.sty`：字体、颜色、封面和自定义环境。
 - `latexmkrc`：固定使用 XeLaTeX，并把编译产物放入 `output`。
 - `assets/silent`：猎宝的小表情包qwq（用GPT生成的）。
@@ -21,9 +22,12 @@
 latexmk main.tex
 ```
 
-生成的 PDF 位于 `output/pdf/main.pdf`。手动编译时请使用 XeLaTeX：
+生成的 PDF 位于 `output/pdf/main.pdf`。`latexmk` 会自动调用 XeLaTeX 和
+Biber 完成正文与参考文献的编译。
 
 ```powershell
+xelatex main.tex
+biber output/pdf/main
 xelatex main.tex
 xelatex main.tex
 ```
@@ -39,6 +43,25 @@ xelatex main.tex
 
 日期文件中只写 `\section` 和正文，不要重复导言区、
 `\begin{document}` 或 `\end{document}`。
+
+## 参考文献
+
+将 BibLaTeX 条目写入 `references.bib`，例如：
+
+```bibtex
+@book{徐卫日语语法教程,
+  title     = {日语语法教程：讲义与练习},
+  author    = {徐卫，赵嫦，奚晓宁},
+  year      = {2024},
+  edition   = {第2版},
+  location  = {北京},
+  publisher = {高等教育出版社},
+  url       = {https://www.hep.com.cn/book/show/7473d300-11dc-49df-be4a-ab29fb54133a}
+}
+```
+
+在正文中使用 `\cite{徐卫日语语法教程}` 引用。参考文献会按照正文中的首次
+引用顺序排列在文章末尾；引用编号和文献网址均可点击。
 
 ## 常用命令
 
